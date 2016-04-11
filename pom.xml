@@ -4,7 +4,7 @@
 
     <groupId>com.pannous.es</groupId>
     <artifactId>reindex</artifactId>
-    <version>1.7.2</version>
+    <version>1.7.3</version>
     <packaging>jar</packaging>
 
     <name>Reindex Plugin</name>
