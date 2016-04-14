@@ -14,14 +14,5 @@
                 <exclude>org.elasticsearch:elasticsearch</exclude>
             </excludes>
         </dependencySet>
-        <dependencySet>
-            <outputDirectory>/</outputDirectory>
-            <useProjectArtifact>true</useProjectArtifact>
-            <useTransitiveFiltering>true</useTransitiveFiltering>
-            <includes>
-                <include>org.apache.httpcomponents:httpclient</include>
-                <include>org.json:json</include>
-            </includes>
-        </dependencySet>
     </dependencySets>
 </assembly>

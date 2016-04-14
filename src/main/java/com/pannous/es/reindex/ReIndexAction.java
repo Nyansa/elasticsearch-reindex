@@ -70,23 +70,24 @@ public class ReIndexAction extends BaseRestHandler {
                     hitsPerPage, withVersion, keepTimeInMinutes, client);
             SearchResponse sr = srb.execute().actionGet();
             rsp = new MySearchResponseES(client, sr, keepTimeInMinutes);
+
+            // TODO make async and allow control of process from external (e.g. stopping etc)
+            // or just move stuff into a river?
+            reindex(rsp, newIndexName, newType, withVersion, waitInSeconds, client);
+
+            // TODO reindex again all new items => therefor we need a timestamp field to filter
+            // + how to combine with existing filter?
+
+            logger.info("Finished reindexing of index " + searchIndexName + " into " + newIndexName + ", query " + filter);
+
+            if (!internalCall) {
+                channel.sendResponse(new BytesRestResponse(OK));
+            }
         } else {
-            // TODO make it possible to restrict to a cluster
-            rsp = new MySearchResponseJson(searchHost, searchPort, searchIndexName, searchType, filter,
-                    basicAuthCredentials, hitsPerPage, withVersion, keepTimeInMinutes);
+            if (!internalCall) {
+                channel.sendResponse(new BytesRestResponse(FORBIDDEN));
+            }
         }
-
-        // TODO make async and allow control of process from external (e.g. stopping etc)
-        // or just move stuff into a river?
-        reindex(rsp, newIndexName, newType, withVersion, waitInSeconds, client);
-
-        // TODO reindex again all new items => therefor we need a timestamp field to filter
-        // + how to combine with existing filter?
-
-        logger.info("Finished reindexing of index " + searchIndexName + " into " + newIndexName + ", query " + filter);
-
-        if (!internalCall)
-            channel.sendResponse(new BytesRestResponse(OK));
     }
 
     public SearchRequestBuilder createScrollSearch(String oldIndexName, String oldType, String filter,
